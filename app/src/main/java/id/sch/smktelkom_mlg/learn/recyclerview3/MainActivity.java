@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
 
 
     public static final String HOTEL = "hotel";
+    public static final int REQUEST_CODE_ADD = 88;
+
     ArrayList<Hotel> mList = new ArrayList<>();
     HotelAdapter mAdapter;
 
@@ -39,10 +41,10 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                goAdd();
             }
+
         });
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -104,5 +106,22 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(HOTEL, mList.get(pos));
         startActivity(intent);
+    }
+
+    private void goAdd()
+    {
+        startActivityForResult(new Intent(this, InputActivity.class), REQUEST_CODE_ADD);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode ==REQUEST_CODE_ADD && resultCode == RESULT_OK)
+        {
+            Hotel hotel = (Hotel) data.getSerializableExtra(HOTEL);
+            mList.add(hotel);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }
